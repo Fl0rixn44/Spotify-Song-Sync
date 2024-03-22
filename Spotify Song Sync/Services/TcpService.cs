@@ -19,7 +19,6 @@ public class TcpService
     private SpotifyService _spotifyService;
 
     private bool _ownerLoop = false;
-    private Party_Info party_info_old = new();
 
     public TcpService(MainWindow mainWindow, Config config, SpotifyService spotifyService)
     {
@@ -40,7 +39,7 @@ public class TcpService
         }
     }
 
-    private void DataReceived(object? sender, DataReceivedEventArgs e)
+    private async void DataReceived(object? sender, DataReceivedEventArgs e)
     {
         BaseMessage? baseMessage = JsonConvert.DeserializeObject<BaseMessage>(Encoding.UTF8.GetString(e.Data.Array, 0, e.Data.Count));
         if (baseMessage == null) return;
@@ -77,29 +76,21 @@ public class TcpService
 
             case "party_info":
 
-                Party_Info? partyInfo = baseMessage.Party_Info;
-                if (party_info_old == null) party_info_old = partyInfo;
+                Party_Info? partyInfo_server = baseMessage.Party_Info;
+                Party_Info? partyInfo_local = await _spotifyService.GetPartyInfo();
 
-                if(partyInfo.SpotifyIsPlaying != party_info_old.SpotifyIsPlaying)
+                if(partyInfo_server.SpotifyIsPlaying != partyInfo_local.SpotifyIsPlaying)
                 {
-                    if (partyInfo.SpotifyIsPlaying)
-                        _spotifyService.StartPlayback(partyInfo);
+                    if (partyInfo_server.SpotifyIsPlaying)
+                        _spotifyService.StartPlayback(partyInfo_server);
                     else _spotifyService.PausePlayback();
-
-                    party_info_old = partyInfo;
                 }
 
-                if(partyInfo.SpotifySong != party_info_old.SpotifySong)
-                {
-                    _spotifyService.StartPlayback(partyInfo);
-                    party_info_old = partyInfo;
-                }
+                if(partyInfo_server.SpotifySong != partyInfo_local.SpotifySong)
+                    _spotifyService.StartPlayback(partyInfo_server);
 
-                if (partyInfo.SpotifySongTimepointMs - party_info_old.SpotifySongTimepointMs > 500 || partyInfo.SpotifySongTimepointMs - party_info_old.SpotifySongTimepointMs < -500)
-                {
-                    _spotifyService.StartPlayback(partyInfo);
-                    party_info_old = partyInfo;
-                } else party_info_old = partyInfo;
+                if (partyInfo_server.SpotifySongTimepointMs - partyInfo_local.SpotifySongTimepointMs > 500 || partyInfo_server.SpotifySongTimepointMs - partyInfo_local.SpotifySongTimepointMs < -500)
+                    _spotifyService.StartPlayback(partyInfo_server);
 
                 break;
 
@@ -161,12 +152,8 @@ public class TcpService
             CurrentPlayingInfo? currentPlayingInfo = JsonConvert.DeserializeObject<CurrentPlayingInfo>(currentlyPlaying.Item.ToJson());
             if(currentPlayingInfo == null) continue;
 
-            Party_Info partyInfo = new()
-            {
-                SpotifySong = currentPlayingInfo.uri,
-                SpotifySongTimepointMs = currentlyPlaying.ProgressMs,
-                SpotifyIsPlaying = currentlyPlaying.IsPlaying
-            };
+            Party_Info? partyInfo = await _spotifyService.GetPartyInfo();
+            if(partyInfo == null) continue;
 
             BaseMessage baseMessage = new()
             {

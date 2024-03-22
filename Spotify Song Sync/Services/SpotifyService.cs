@@ -10,6 +10,8 @@ using RestSharp;
 using System.Linq;
 using System.IO;
 using Spotify_Song_Sync.Models;
+using Newtonsoft.Json;
+using Swan;
 
 namespace Spotify_Song_Sync.Services;
 
@@ -142,6 +144,22 @@ public class SpotifyService
 
             await _spotifyClient.Player.ResumePlayback(playbackRequest);
         }
+    }
+
+    public async Task<Party_Info?> GetPartyInfo()
+    {
+        CurrentlyPlaying? currentlyPlaying = await GetCurrentlyPlaying();
+        if (currentlyPlaying == null) return null;
+
+        CurrentPlayingInfo? currentPlayingInfo = JsonConvert.DeserializeObject<CurrentPlayingInfo>(currentlyPlaying.Item.ToJson());
+        if (currentPlayingInfo == null) return null;
+
+        return new Party_Info()
+        {
+            SpotifySong = currentPlayingInfo.uri,
+            SpotifySongTimepointMs = currentlyPlaying.ProgressMs,
+            SpotifyIsPlaying = currentlyPlaying.IsPlaying
+        };
     }
 
     public void PausePlayback() => _spotifyClient.Player.PausePlayback();
