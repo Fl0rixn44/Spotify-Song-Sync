@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spotify Song Sync", "Spotify Song Sync\Spotify Song Sync.csproj", "{4A480433-E3E9-477A-A075-ED7ED6E7DB53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifySongSync_Server", "SpotifySongSync_Server\SpotifySongSync_Server.csproj", "{3BD4E14E-3189-42F4-B84F-801B63C04637}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4A480433-E3E9-477A-A075-ED7ED6E7DB53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A480433-E3E9-477A-A075-ED7ED6E7DB53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A480433-E3E9-477A-A075-ED7ED6E7DB53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A480433-E3E9-477A-A075-ED7ED6E7DB53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BD4E14E-3189-42F4-B84F-801B63C04637}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BD4E14E-3189-42F4-B84F-801B63C04637}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BD4E14E-3189-42F4-B84F-801B63C04637}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BD4E14E-3189-42F4-B84F-801B63C04637}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {991FCD95-6340-45CC-9636-6CD6657A6BDC}
+	EndGlobalSection
+EndGlobal

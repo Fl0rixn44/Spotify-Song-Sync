@@ -1,0 +1,53 @@
+﻿<ui:FluentWindow x:Class="Spotify_Song_Sync.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Spotify_Song_Sync"
+        mc:Ignorable="d"
+        Title="Spotify Song Sync" Height="450" Width="800"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+    <Grid Background="#222222">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Grid.Row="0" Title="Spotify Song Sync" Background="#1ed760" Foreground="White"/>
+        
+        <Grid Grid.Row="1" Background="#222222">
+            <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,10,10,0">
+                <TextBlock Text="© fl0rixn.de" Margin="5,55,5,5" Foreground="White"/>
+            </Grid>
+
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Top">
+                <Image x:Name="spotifyUserPicture" Source="synclogo.png" Width="50" Height="50"/> <!-- ADD LOGO -->
+                <TextBlock x:Name="spotifyInfo" Text="Not connected with Spotify!" Foreground="White" Margin="0,100,0,-20"/>
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10">
+                <ui:Button Click="btnSettings_Click" x:Name="btnSettings" Content="Settings" Margin="0,0,5,0" Background="#1ed760" Icon="{ui:FontIcon '✉'}"/>
+                <ui:Button Click="btnAuth_Click" x:Name="btnAuth" Content="Auth" Background="#1ed760" Icon="{ui:FontIcon '▶'}" IsEnabled="False"/>
+            </StackPanel>
+
+            <StackPanel x:Name="pnlPartyCreate" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 -50" Visibility="Visible">
+                <TextBlock Text="Party-Code:" Foreground="White"/>
+                <ui:TextBox x:Name="inpCode" Width="200" Margin="0,5"/>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <ui:Button Click="btnPartyCreate_Click" x:Name="btnPartyCreate" Content="Create" Width="100" Margin="0,0,10,0" Background="#1ed760" Icon="{ui:FontIcon '▶'}" IsEnabled="false"/>
+                    <ui:Button Click="btnPartyJoin_Click" x:Name="btnPartyJoin" Content="Join" Width="100" Background="#1ed760" Icon="{ui:FontIcon '▶'}" IsEnabled="false"/>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel x:Name="pnlParty" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 -50" Visibility="Collapsed">
+                <TextBlock x:Name="partyInfo" Foreground="White"/>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <ui:Button Click="btnLeaveParty_Click" x:Name="btnLeaveParty" Content="Leave" Width="100" Background="#1ed760" Icon="{ui:FontIcon '▶'}" Visibility="Collapsed"/>
+                    <ui:Button Click="btnDeleteParty_Click" x:Name="btnDeleteParty" Content="Delete" Width="100" Background="#1ed760" Icon="{ui:FontIcon '▶'}" Visibility="Collapsed"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</ui:FluentWindow>
