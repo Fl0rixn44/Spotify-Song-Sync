@@ -42,7 +42,6 @@ public class SpotifyService
         {
             Scope = new List<string>
             {
-                Scopes.UgcImageUpload,
                 Scopes.UserReadPlaybackState,
                 Scopes.UserModifyPlaybackState,
                 Scopes.UserReadCurrentlyPlaying,
@@ -58,9 +57,7 @@ public class SpotifyService
                 Scopes.UserLibraryRead,
                 Scopes.UserTopRead,
                 Scopes.UserReadPlaybackPosition,
-                Scopes.UserReadRecentlyPlayed,
-                Scopes.UserFollowRead,
-                Scopes.UserFollowModify
+                Scopes.UserReadRecentlyPlayed
             }
         };
 
@@ -128,54 +125,24 @@ public class SpotifyService
         return deviceResponse.Devices.FirstOrDefault();
     }
 
-    public async Task<CurrentlyPlaying?> GetCurrentlyPlaying() => await _spotifyClient.Player.GetCurrentlyPlaying(new PlayerCurrentlyPlayingRequest() { });
+    public async Task<CurrentlyPlaying?> GetCurrentlyPlaying() => await _spotifyClient.Player.GetCurrentlyPlaying(new PlayerCurrentlyPlayingRequest() {});
 
-    //shared
     public async void StartPlayback(Party_Info partyInfo)
     {
-        try
+        Device? device = await GetActiveDevice();
+        if (device != null)
         {
-            Device? device = await GetActiveDevice();
-            if (device != null)
+            PlayerResumePlaybackRequest playbackRequest = new()
             {
-                PlayerResumePlaybackRequest test = new()
-                { 
-                    PositionMs = partyInfo.SpotifySongTimepointMs,
-                    OffsetParam = new PlayerResumePlaybackRequest.Offset { Position = 0 }, //https://open.spotify.com/playlist/7KimSXcs5yFRap2yUXTHnl?si=1e2cce44b3e14755
-                    DeviceId = device.Id,
-                    Uris = new List<string>() { partyInfo.SpotifySong } //https://open.spotify.com/intl-de/track/4PrGyX4YgCT6V3YqY7XEUw?si=e5f9935f186846fc
-                };
-                await _spotifyClient.Player.ResumePlayback(test);
-            }
-        } catch (Exception ex) 
-        {
-            MessageBox.Show($"{ex}");
-        }
-    }
+                PositionMs = partyInfo.SpotifySongTimepointMs,
+                OffsetParam = new PlayerResumePlaybackRequest.Offset { Position = 0 },
+                DeviceId = device.Id,
+                Uris = new List<string>() { partyInfo.SpotifySong }
+            };
 
-    public async void SkipTo()
-    {
-        try
-        {
-            Device? device = await GetActiveDevice();
-            if (device != null)
-            {
-                PlayerResumePlaybackRequest test = new()
-                {
-                    PositionMs = 2000,
-                    OffsetParam = new PlayerResumePlaybackRequest.Offset { Position = 0 },
-                    DeviceId = device.Id,
-                    Uris = new List<string>() { "spotify:track:4PrGyX4YgCT6V3YqY7XEUw" }
-                };
-                await _spotifyClient.Player.ResumePlayback(test);
-            }
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"{ex}");
+            await _spotifyClient.Player.ResumePlayback(playbackRequest);
         }
     }
 
     public void PausePlayback() => _spotifyClient.Player.PausePlayback();
-    public void ResumePlayback() => _spotifyClient.Player.ResumePlayback();
 }

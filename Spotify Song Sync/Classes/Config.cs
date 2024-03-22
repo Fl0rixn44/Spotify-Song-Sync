@@ -13,7 +13,7 @@ public class Config
     public string AppVersion = "1.0.0";
     public string ConfigVersion { get; set; } = "1.0.0";
     public string ClientId { get; set; } = "";
-    public string Ip { get; set; } = "127.0.0.1";
+    public string Ip { get; set; } = "45.145.41.236";
 
     public Config() {}
 

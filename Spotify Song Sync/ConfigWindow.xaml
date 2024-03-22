@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Spotify_Song_Sync"
         mc:Ignorable="d"
-        Title="Settings" Height="300" Width="400"
+        Title="Settings" Height="400" Width="400"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
     <Grid Background="#222222">
@@ -23,7 +23,7 @@
                 <ui:Button Click="btnExit_Click" Content="Exit" Background="Transparent" Icon="{ui:FontIcon '✕'}" Foreground="White"/>
             </StackPanel>
 
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 125">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 225">
                 <ui:Button Click="btnApp_Click" Content="1. Create a new app" Margin="0,0,5,0" Background="Transparent" Icon="{ui:FontIcon '▶'}" Foreground="White"/>
                 <ui:Button Click="btnCopyUri_Click" Content="2. Click to copy redirect url (paste it there)" Margin="0,0,5,0" Background="Transparent" Icon="{ui:FontIcon '▶'}" Foreground="White"/>
                 <ui:Button Click="btnPasteSecret_Click" Content="3. Go in settings and copy client id (paste it here)" Margin="0,0,5,0" Background="Transparent" Icon="{ui:FontIcon '▶'}" Foreground="White"/>
@@ -32,6 +32,8 @@
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 -50">
                 <TextBlock Text="Client-Id:" Foreground="White"/>
                 <TextBox x:Name="txtSecret" Width="200" Margin="0,5"/>
+                <TextBlock Text="Server-Ip:" Foreground="White"/>
+                <TextBox x:Name="txtIp" Width="200" Margin="0,5" Cursor="IBeam"/>
             </StackPanel>
         </Grid>
     </Grid>

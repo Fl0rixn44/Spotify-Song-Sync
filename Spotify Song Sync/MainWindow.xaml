@@ -23,7 +23,7 @@
             </Grid>
 
             <Grid HorizontalAlignment="Center" VerticalAlignment="Top">
-                <Image x:Name="spotifyUserPicture" Source="synclogo.png" Width="50" Height="50"/> <!-- ADD LOGO -->
+                <Image x:Name="spotifyUserPicture" Source="synclogo.png" Width="50" Height="50"/>
                 <TextBlock x:Name="spotifyInfo" Text="Not connected with Spotify!" Foreground="White" Margin="0,100,0,-20"/>
             </Grid>
 
@@ -34,7 +34,7 @@
 
             <StackPanel x:Name="pnlPartyCreate" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 -50" Visibility="Visible">
                 <TextBlock Text="Party-Code:" Foreground="White"/>
-                <ui:TextBox x:Name="inpCode" Width="200" Margin="0,5"/>
+                <ui:TextBox x:Name="inpCode" Width="200" Margin="0,5" SelectionBrush="Black"/>
                 <StackPanel Orientation="Horizontal" Margin="0,5">
                     <ui:Button Click="btnPartyCreate_Click" x:Name="btnPartyCreate" Content="Create" Width="100" Margin="0,0,10,0" Background="#1ed760" Icon="{ui:FontIcon '▶'}" IsEnabled="false"/>
                     <ui:Button Click="btnPartyJoin_Click" x:Name="btnPartyJoin" Content="Join" Width="100" Background="#1ed760" Icon="{ui:FontIcon '▶'}" IsEnabled="false"/>

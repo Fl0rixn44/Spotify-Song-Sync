@@ -1,8 +1,6 @@
 ﻿using Spotify_Song_Sync.Classes;
 using SpotifyAPI.Web.Auth;
-using SpotifyAPI.Web.Http;
 using System;
-using System.Diagnostics;
 using System.Windows;
 
 namespace Spotify_Song_Sync;
@@ -20,6 +18,7 @@ public partial class ConfigWindow
 
         _config = config;
         txtSecret.Text = _config.ClientId;
+        txtIp.Text = _config.Ip;
     }
 
     private void btnApp_Click(object sender, RoutedEventArgs e) => BrowserUtil.Open(new Uri("https://developer.spotify.com/dashboard"));
@@ -29,6 +28,7 @@ public partial class ConfigWindow
     private void btnSave_Click(object sender, RoutedEventArgs e)
     {
         _config.ClientId = txtSecret.Text;
+        _config.Ip = txtIp.Text;
         _config.SaveConfig();
         this.Close();
     }

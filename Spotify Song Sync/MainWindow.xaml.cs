@@ -24,10 +24,7 @@ public partial class MainWindow
         LoadWindowConfig();
     }
 
-    private void LoadWindowConfig()
-    {
-        btnAuth.IsEnabled = _config.ClientId == "" ? false : true;
-    }
+    private void LoadWindowConfig() => btnAuth.IsEnabled = _config.ClientId == "" ? false : true;
 
     private void btnSettings_Click(object sender, RoutedEventArgs e)
     {

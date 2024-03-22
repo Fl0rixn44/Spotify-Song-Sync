@@ -19,7 +19,7 @@ public class TcpService
     private SpotifyService _spotifyService;
 
     private bool _ownerLoop = false;
-    private Party_Info party_info_old;
+    private Party_Info party_info_old = new();
 
     public TcpService(MainWindow mainWindow, Config config, SpotifyService spotifyService)
     {
@@ -49,12 +49,12 @@ public class TcpService
         {
             case "party_created":
 
-                Message_Text? message = baseMessage.Message_Text;
+                Message_Text? partyCreatedMessage = baseMessage.Message_Text;
                 _mainWindow.Dispatcher.Invoke(() =>
                 {
                     _mainWindow.pnlPartyCreate.Visibility = Visibility.Collapsed;
                     _mainWindow.pnlParty.Visibility = Visibility.Visible;
-                    _mainWindow.partyInfo.Text = $"Owner\nParty since: {DateTime.Now}\nParty Code: {message?.Text}";
+                    _mainWindow.partyInfo.Text = $"Owner\nParty since: {DateTime.Now}\nParty Code: {partyCreatedMessage?.Text}";
                     _mainWindow.btnDeleteParty.Visibility = Visibility.Visible;
                     _mainWindow.btnLeaveParty.Visibility = Visibility.Collapsed;
                 });
@@ -64,12 +64,12 @@ public class TcpService
 
             case "party_joined":
 
-                Message_Text? joinedData = baseMessage.Message_Text;
+                Message_Text? partyJoinedMessage = baseMessage.Message_Text;
                 _mainWindow.Dispatcher.Invoke(() =>
                 {
                     _mainWindow.pnlPartyCreate.Visibility = Visibility.Collapsed;
                     _mainWindow.pnlParty.Visibility = Visibility.Visible;
-                    _mainWindow.partyInfo.Text = $"Listener\nParty in since: {DateTime.Now}\nParty Code: {joinedData?.Text}";
+                    _mainWindow.partyInfo.Text = $"Listener\nParty in since: {DateTime.Now}\nParty Code: {partyJoinedMessage?.Text}";
                     _mainWindow.btnDeleteParty.Visibility = Visibility.Collapsed;
                     _mainWindow.btnLeaveParty.Visibility = Visibility.Visible;
                 });
@@ -131,14 +131,7 @@ public class TcpService
         }
     }
 
-    public void CreateParty()
-    {
-        BaseMessage baseMessage = new()
-        {
-            Message = "party_create"
-        };
-        _client.SendAsync(JsonConvert.SerializeObject(baseMessage));
-    }
+    public void CreateParty() => _client.SendAsync(JsonConvert.SerializeObject(new BaseMessage { Message = "party_create" }));
 
     public void JoinParty(string code)
     {
@@ -150,23 +143,8 @@ public class TcpService
         _client.SendAsync(JsonConvert.SerializeObject(baseMessage));
     }
 
-    public void DeleteParty()
-    {
-        BaseMessage baseMessage = new()
-        {
-            Message = "party_delete"
-        };
-        _client.SendAsync(JsonConvert.SerializeObject(baseMessage));
-    }
-
-    public void LeaveParty()
-    {
-        BaseMessage baseMessage = new()
-        {
-            Message = "party_leave"
-        };
-        _client.SendAsync(JsonConvert.SerializeObject(baseMessage));
-    }
+    public void DeleteParty() => _client.SendAsync(JsonConvert.SerializeObject(new BaseMessage { Message = "party_delete" }));
+    public void LeaveParty() => _client.SendAsync(JsonConvert.SerializeObject(new BaseMessage { Message = "party_leave" }));
 
     public async void OwnerLoop()
     {
@@ -180,10 +158,12 @@ public class TcpService
             CurrentlyPlaying? currentlyPlaying = await _spotifyService.GetCurrentlyPlaying();
             if (currentlyPlaying == null) continue;
 
-            CurrentPlayingInfo? advInfo = JsonConvert.DeserializeObject<CurrentPlayingInfo>(currentlyPlaying.Item.ToJson());
+            CurrentPlayingInfo? currentPlayingInfo = JsonConvert.DeserializeObject<CurrentPlayingInfo>(currentlyPlaying.Item.ToJson());
+            if(currentPlayingInfo == null) continue;
+
             Party_Info partyInfo = new()
             {
-                SpotifySong = advInfo.uri,
+                SpotifySong = currentPlayingInfo.uri,
                 SpotifySongTimepointMs = currentlyPlaying.ProgressMs,
                 SpotifyIsPlaying = currentlyPlaying.IsPlaying
             };
