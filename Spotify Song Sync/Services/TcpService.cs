@@ -81,6 +81,9 @@ public class TcpService
 
                 if (partyInfo_local == null) partyInfo_local = new();
 
+                //TimeSpan timeDiff = DateTime.Now - partyInfo_server.MessageSent;
+                //if (timeDiff.TotalSeconds > 1.5) return;
+
                 if (partyInfo_server.SpotifyIsPlaying != partyInfo_local.SpotifyIsPlaying)
                 {
                     if (partyInfo_server.SpotifyIsPlaying)
@@ -146,7 +149,7 @@ public class TcpService
         _ownerLoop = true;
         while (_ownerLoop)
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(500);
 
             CurrentlyPlaying? currentlyPlaying = await _spotifyService.GetCurrentlyPlaying();
             if (currentlyPlaying == null) continue;

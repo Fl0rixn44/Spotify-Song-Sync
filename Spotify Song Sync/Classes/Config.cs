@@ -9,8 +9,6 @@ public class Config
 {
     private readonly string _configPath = $@"{Environment.CurrentDirectory}\config.json";
 
-    [JsonIgnore]
-    public string AppVersion = "1.0.0";
     public string ConfigVersion { get; set; } = "1.0.0";
     public string ClientId { get; set; } = "";
     public string Ip { get; set; } = "45.145.41.236";

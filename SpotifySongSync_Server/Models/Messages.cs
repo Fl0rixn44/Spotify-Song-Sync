@@ -17,4 +17,5 @@ public class Party_Info
     public string SpotifySong { get; set; }
     public int? SpotifySongTimepointMs { get; set; }
     public bool SpotifyIsPlaying { get; set; }
+    public DateTime MessageSent { get; set; }
 }

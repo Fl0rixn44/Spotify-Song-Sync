@@ -155,7 +155,8 @@ public class SpotifyService
         {
             SpotifySong = currentPlayingInfo.uri,
             SpotifySongTimepointMs = currentlyPlaying.ProgressMs,
-            SpotifyIsPlaying = currentlyPlaying.IsPlaying
+            SpotifyIsPlaying = currentlyPlaying.IsPlaying,
+            MessageSent = DateTime.Now
         };
     }
 

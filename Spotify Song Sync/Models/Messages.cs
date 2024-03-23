@@ -1,4 +1,6 @@
-﻿namespace Spotify_Song_Sync.Models;
+﻿using System;
+
+namespace Spotify_Song_Sync.Models;
 
 public class BaseMessage
 {
@@ -17,4 +19,5 @@ public class Party_Info
     public string SpotifySong { get; set; }
     public int? SpotifySongTimepointMs { get; set; }
     public bool SpotifyIsPlaying { get; set; }
+    public DateTime MessageSent { get; set; }
 }
