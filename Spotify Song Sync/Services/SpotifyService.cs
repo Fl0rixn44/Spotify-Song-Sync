@@ -105,6 +105,7 @@ public class SpotifyService
                     bitmap.StreamSource = stream;
                     bitmap.EndInit();
 
+                    if (bitmap == null) return;
                     _mainWindow.spotifyUserPicture.Source = bitmap;
                 }
             }

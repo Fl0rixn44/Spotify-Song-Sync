@@ -79,7 +79,9 @@ public class TcpService
                 Party_Info? partyInfo_server = baseMessage.Party_Info;
                 Party_Info? partyInfo_local = await _spotifyService.GetPartyInfo();
 
-                if(partyInfo_server.SpotifyIsPlaying != partyInfo_local.SpotifyIsPlaying)
+                if (partyInfo_local == null) partyInfo_local = new();
+
+                if (partyInfo_server.SpotifyIsPlaying != partyInfo_local.SpotifyIsPlaying)
                 {
                     if (partyInfo_server.SpotifyIsPlaying)
                         _spotifyService.StartPlayback(partyInfo_server);
@@ -89,7 +91,7 @@ public class TcpService
                 if(partyInfo_server.SpotifySong != partyInfo_local.SpotifySong)
                     _spotifyService.StartPlayback(partyInfo_server);
 
-                if (partyInfo_server.SpotifySongTimepointMs - partyInfo_local.SpotifySongTimepointMs > 500 || partyInfo_server.SpotifySongTimepointMs - partyInfo_local.SpotifySongTimepointMs < -500)
+                if (partyInfo_server.SpotifyIsPlaying && (partyInfo_server.SpotifySongTimepointMs - partyInfo_local.SpotifySongTimepointMs > 500 || partyInfo_server.SpotifySongTimepointMs - partyInfo_local.SpotifySongTimepointMs < -500))
                     _spotifyService.StartPlayback(partyInfo_server);
 
                 break;
