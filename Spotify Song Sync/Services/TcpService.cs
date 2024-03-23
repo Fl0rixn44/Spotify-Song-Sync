@@ -149,7 +149,7 @@ public class TcpService
         _ownerLoop = true;
         while (_ownerLoop)
         {
-            Thread.Sleep(500);
+            Thread.Sleep(1200);
 
             CurrentlyPlaying? currentlyPlaying = await _spotifyService.GetCurrentlyPlaying();
             if (currentlyPlaying == null) continue;
