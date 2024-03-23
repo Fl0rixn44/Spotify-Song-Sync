@@ -51,10 +51,6 @@ public class SpotifyService
                 Scopes.AppRemoteControl,
                 Scopes.UserReadEmail,
                 Scopes.UserReadPrivate,
-                Scopes.PlaylistReadCollaborative,
-                Scopes.PlaylistModifyPublic,
-                Scopes.PlaylistReadPrivate,
-                Scopes.PlaylistModifyPrivate,
                 Scopes.UserLibraryModify,
                 Scopes.UserLibraryRead,
                 Scopes.UserTopRead,
@@ -75,7 +71,7 @@ public class SpotifyService
         if (currentDevice == null)
         {
             MessageBox.Show($"No Device detected, please start Spotify on any device with your connected account!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            _mainWindow.btnAuth.IsEnabled = true;
+            _mainWindow.Dispatcher.Invoke(() => _mainWindow.btnAuth.IsEnabled = true);
 
             return;
         }
@@ -87,7 +83,7 @@ public class SpotifyService
     private async Task OnErrorReceived(object sender, string error, string state)
     {
         MessageBox.Show($"Error occurred during authentication.\n\n{error}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        _mainWindow.btnAuth.IsEnabled = true;
+        _mainWindow.Dispatcher.Invoke(() => _mainWindow.btnAuth.IsEnabled = true);
         await _server.Stop();
     }
 
