@@ -15,7 +15,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Grid.Row="0" Title="Spotify Song Sync" Background="#1ed760" Foreground="White"/>
+        <ui:TitleBar x:Name="titleBar" Grid.Row="0" Title="Spotify Song Sync" Background="#1ed760" Foreground="White"/>
         
         <Grid Grid.Row="1" Background="#222222">
             <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,10,10,0">

@@ -41,89 +41,96 @@ public class TcpService
 
     private async void DataReceived(object? sender, DataReceivedEventArgs e)
     {
-        BaseMessage? baseMessage = JsonConvert.DeserializeObject<BaseMessage>(Encoding.UTF8.GetString(e.Data.Array, 0, e.Data.Count));
-        if (baseMessage == null) return;
-
-        switch (baseMessage.Message)
+        try
         {
-            case "party_created":
+            BaseMessage? baseMessage = JsonConvert.DeserializeObject<BaseMessage>(Encoding.UTF8.GetString(e.Data.Array, 0, e.Data.Count));
+            if (baseMessage == null) return;
 
-                Message_Text? partyCreatedMessage = baseMessage.Message_Text;
-                _mainWindow.Dispatcher.Invoke(() =>
-                {
-                    _mainWindow.pnlPartyCreate.Visibility = Visibility.Collapsed;
-                    _mainWindow.pnlParty.Visibility = Visibility.Visible;
-                    _mainWindow.partyInfo.Text = $"Owner\nParty since: {DateTime.Now}\nParty Code: {partyCreatedMessage?.Text}";
-                    _mainWindow.btnDeleteParty.Visibility = Visibility.Visible;
-                    _mainWindow.btnLeaveParty.Visibility = Visibility.Collapsed;
-                });
+            switch (baseMessage.Message)
+            {
+                case "party_created":
 
-                OwnerLoop();
-                break;
+                    Message_Text? partyCreatedMessage = baseMessage.Message_Text;
+                    _mainWindow.Dispatcher.Invoke(() =>
+                    {
+                        _mainWindow.pnlPartyCreate.Visibility = Visibility.Collapsed;
+                        _mainWindow.pnlParty.Visibility = Visibility.Visible;
+                        _mainWindow.partyInfo.Text = $"Owner\nParty since: {DateTime.Now}\nParty Code: {partyCreatedMessage?.Text}";
+                        _mainWindow.btnDeleteParty.Visibility = Visibility.Visible;
+                        _mainWindow.btnLeaveParty.Visibility = Visibility.Collapsed;
+                    });
 
-            case "party_joined":
+                    OwnerLoop();
+                    break;
 
-                Message_Text? partyJoinedMessage = baseMessage.Message_Text;
-                _mainWindow.Dispatcher.Invoke(() =>
-                {
-                    _mainWindow.pnlPartyCreate.Visibility = Visibility.Collapsed;
-                    _mainWindow.pnlParty.Visibility = Visibility.Visible;
-                    _mainWindow.partyInfo.Text = $"Listener\nParty in since: {DateTime.Now}\nParty Code: {partyJoinedMessage?.Text}";
-                    _mainWindow.btnDeleteParty.Visibility = Visibility.Collapsed;
-                    _mainWindow.btnLeaveParty.Visibility = Visibility.Visible;
-                });
-                break;
+                case "party_joined":
 
-            case "party_info":
+                    Message_Text? partyJoinedMessage = baseMessage.Message_Text;
+                    _mainWindow.Dispatcher.Invoke(() =>
+                    {
+                        _mainWindow.pnlPartyCreate.Visibility = Visibility.Collapsed;
+                        _mainWindow.pnlParty.Visibility = Visibility.Visible;
+                        _mainWindow.partyInfo.Text = $"Listener\nParty in since: {DateTime.Now}\nParty Code: {partyJoinedMessage?.Text}";
+                        _mainWindow.btnDeleteParty.Visibility = Visibility.Collapsed;
+                        _mainWindow.btnLeaveParty.Visibility = Visibility.Visible;
+                    });
+                    break;
 
-                Party_Info? partyInfo_server = baseMessage.Party_Info;
-                Party_Info? partyInfo_local = await _spotifyService.GetPartyInfo();
+                case "party_info":
 
-                if (partyInfo_local == null) partyInfo_local = new();
+                    Party_Info? partyInfo_server = baseMessage.Party_Info;
+                    Party_Info? partyInfo_local = await _spotifyService.GetPartyInfo();
 
-                //TimeSpan timeDiff = DateTime.Now - partyInfo_server.MessageSent;
-                //if (timeDiff.TotalSeconds > 1.5) return;
+                    if (partyInfo_local == null) partyInfo_local = new();
 
-                if (partyInfo_server.SpotifyIsPlaying != partyInfo_local.SpotifyIsPlaying)
-                {
-                    if (partyInfo_server.SpotifyIsPlaying)
+                    //TimeSpan timeDiff = DateTime.Now - partyInfo_server.MessageSent;
+                    //if (timeDiff.TotalSeconds > 1.5) return;
+
+                    if (partyInfo_server.SpotifyIsPlaying != partyInfo_local.SpotifyIsPlaying)
+                    {
+                        if (partyInfo_server.SpotifyIsPlaying)
+                            _spotifyService.StartPlayback(partyInfo_server);
+                        else _spotifyService.PausePlayback();
+                    }
+
+                    if (partyInfo_server.SpotifySong != partyInfo_local.SpotifySong)
                         _spotifyService.StartPlayback(partyInfo_server);
-                    else _spotifyService.PausePlayback();
-                }
 
-                if(partyInfo_server.SpotifySong != partyInfo_local.SpotifySong)
-                    _spotifyService.StartPlayback(partyInfo_server);
+                    if (partyInfo_server.SpotifyIsPlaying && (partyInfo_server.SpotifySongTimepointMs - partyInfo_local.SpotifySongTimepointMs > 500 || partyInfo_server.SpotifySongTimepointMs - partyInfo_local.SpotifySongTimepointMs < -500))
+                        _spotifyService.StartPlayback(partyInfo_server);
 
-                if (partyInfo_server.SpotifyIsPlaying && (partyInfo_server.SpotifySongTimepointMs - partyInfo_local.SpotifySongTimepointMs > 500 || partyInfo_server.SpotifySongTimepointMs - partyInfo_local.SpotifySongTimepointMs < -500))
-                    _spotifyService.StartPlayback(partyInfo_server);
+                    break;
 
-                break;
+                case "party_notfound":
 
-            case "party_notfound":
+                    MessageBox.Show("The Party Code you've used is not existing!", "Party not found", MessageBoxButton.OK, MessageBoxImage.Error);
+                    break;
 
-                MessageBox.Show("The Party Code you've used is not existing!", "Party not found", MessageBoxButton.OK, MessageBoxImage.Error);
-                break;
+                case "party_left":
 
-            case "party_left":
+                    _mainWindow.Dispatcher.Invoke(() =>
+                    {
+                        _mainWindow.pnlPartyCreate.Visibility = Visibility.Visible;
+                        _mainWindow.pnlParty.Visibility = Visibility.Collapsed;
+                    });
+                    break;
 
-                _mainWindow.Dispatcher.Invoke(() =>
-                {
-                    _mainWindow.pnlPartyCreate.Visibility = Visibility.Visible;
-                    _mainWindow.pnlParty.Visibility = Visibility.Collapsed;
-                });
-                break;
+                case "party_deleted":
 
-            case "party_deleted":
+                    _mainWindow.Dispatcher.Invoke(() =>
+                    {
+                        _mainWindow.pnlPartyCreate.Visibility = Visibility.Visible;
+                        _mainWindow.pnlParty.Visibility = Visibility.Collapsed;
+                    });
 
-                _mainWindow.Dispatcher.Invoke(() =>
-                {
-                    _mainWindow.pnlPartyCreate.Visibility = Visibility.Visible;
-                    _mainWindow.pnlParty.Visibility = Visibility.Collapsed;
-                });
-
-                if (_ownerLoop) _ownerLoop = false;
-                MessageBox.Show("The Party you were in got deleted!", "Party deleted", MessageBoxButton.OK, MessageBoxImage.Warning);
-                break;
+                    if (_ownerLoop) _ownerLoop = false;
+                    MessageBox.Show("The Party you were in got deleted!", "Party deleted", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    break;
+            }
+        } catch (Exception ex)
+        {
+            MessageBox.Show($"Error occurred while recieving data.\n\n{ex}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            Environment.Exit(-1);
         }
     }
 

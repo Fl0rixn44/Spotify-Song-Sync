@@ -17,6 +17,8 @@ public partial class MainWindow
     {
         InitializeComponent();
 
+        titleBar.Title = $"Spotify Song Sync - v{App.appVersion}";
+
         _config.InitializeConfig();
         _spotifyService = new(this, _config);
         _tcpService = new(this, _config, _spotifyService);
